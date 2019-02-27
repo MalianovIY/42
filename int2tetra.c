@@ -39,11 +39,17 @@ char	**int2tetra(int a, char c) //65 .46
 
 void	tetra2int(int b)
 {
-	int	a[20];
+	int	a[20], i;
 
-	ft_memcpy((void *)a,(void *)"",40);
+	ft_memcpy((void *)a,(void *)STRING_TETRA_1,16);
+	ft_memcpy((void *)(a + 16),(void *)STRING_TETRA_2,16);
+	ft_memcpy((void *)(a + 32),(void *)STRING_TETRA_3,8);
+	i = -1;
+	while (--i < 40)
+		printf("%o\t", a[i]);
+	print("\n%o", b);
 //	int	*c;
-
+//
 //	a[0] = (0xCC00);
 //	a[1] = (0xF000);
 //	a[2] = (0x8888);
@@ -128,29 +134,29 @@ int		main(int argc, char **argv)
 	int		inp[27];
 	char 	***tetra;
 
-	bintetra(tet);
-	ft_bzero(inp, 27);
-	if (argc != 2)
-	{
-		write(1, "usage: ./fillit source_file\n", 29);
-		return (0);
-	}
-	fd = open(argv[1],O_RDONLY);
-	tetreadvalid(fd, tet, inp);
-	size = 0;
-	while (inp[size] && size < 27)
-		size++;
-	tetra = (char ***)malloc(sizeof(char **) * (size + 1));
-	tetra[size] = NULL;
-	j = -1;
-	while (++j < size)
-	{
-		tetra[j] = int2tetra(inp[j], 'A' + j);
-		i = -1;
-		while (++i < 4)
-			printf("%0x, %s\n", inp[0], tetra[j][i]);
-		printf("\n");
-	}
-	fillit(tetra);
-	exit(0);
+	tetra2int(0xF000);
+//	ft_bzero(inp, 27);
+//	if (argc != 2)
+//	{
+//		write(1, "usage: ./fillit source_file\n", 29);
+//		return (0);
+//	}
+//	fd = open(argv[1],O_RDONLY);
+//	tetreadvalid(fd, tet, inp);
+//	size = 0;
+//	while (inp[size] && size < 27)
+//		size++;
+//	tetra = (char ***)malloc(sizeof(char **) * (size + 1));
+//	tetra[size] = NULL;
+//	j = -1;
+//	while (++j < size)
+//	{
+//		tetra[j] = int2tetra(inp[j], 'A' + j);
+//		i = -1;
+//		while (++i < 4)
+//			printf("%0x, %s\n", inp[0], tetra[j][i]);
+//		printf("\n");
+//	}
+//	//fillit(tetra);
+//	exit(0);
 }

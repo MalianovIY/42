@@ -39,6 +39,7 @@ void 	backtracking(char **map, char ***t)
 	while ()
 	while (t[i] != NULL)
 	{
+		if
 		puttetra(map, tetra[i]);
 		backtracking(map, tetra);
 		removetera(map, tetra[i++]);
