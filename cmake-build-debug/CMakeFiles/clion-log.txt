@@ -1,0 +1,4 @@
+"/Volumes/Storage/cache/ahorker/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5429.37/CLion.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/ahorker/CLionProjects/fillit
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/ahorker/CLionProjects/fillit/cmake-build-debug
