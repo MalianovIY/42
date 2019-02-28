@@ -37,43 +37,6 @@ char	**int2tetra(int a, char c) //65 .46
 	return (tet);
 }
 
-void	tetra2int(int b)
-{
-	int	a[20], i;
-
-	ft_memcpy((void *)a,(void *)STRING_TETRA_1,16);
-	ft_memcpy((void *)(a + 16),(void *)STRING_TETRA_2,16);
-	ft_memcpy((void *)(a + 32),(void *)STRING_TETRA_3,8);
-	i = -1;
-	while (--i < 40)
-		printf("%o\t", a[i]);
-	print("\n%o", b);
-//	int	*c;
-//
-//	a[0] = (0xCC00);
-//	a[1] = (0xF000);
-//	a[2] = (0x8888);
-//	a[3] = (0x6C00);
-//	a[4] = (0x8C40);
-//	a[5] = (0xC600);
-//	a[6] = (0x4C80);
-//	a[7] = (0xE800);
-//	a[8] = (0xC440);
-//	a[9] = (0x2E00);
-//	a[10] = (0x88C0);
-//	a[11] = (0xE200);
-//	a[12] = (0x44C0);
-//	a[13] = (0x8E00);
-//	a[14] = (0xC880);
-//	a[15] = (0xE400);
-//	a[16] = (0x4C40);
-//	a[17] = (0x4E00);
-//	a[18] = (0x8C80);
-//	a[19] = 0;
-//	while (b != *a && *a)
-//		c++;
-}
-
 int		tetread(int fd, char buf[], int *t)
 {
 	int	ret, wl, i;
@@ -127,36 +90,37 @@ void	tetreadvalid(int fd, int const tet[], int inp[])
 		exit(5);
 }
 
-int		main(int argc, char **argv)
+int		main(int argc, char *argv[])
 {
-	int		fd, i, j, size;
-	int		tet[20];
-	int		inp[27];
-	char 	***tetra;
+	int				fd, i, j, size;
+	unsigned int	tet[20];
+	int				inp[27];
+	char 			***tetra;
 
-	tetra2int(0xF000);
-//	ft_bzero(inp, 27);
-//	if (argc != 2)
-//	{
-//		write(1, "usage: ./fillit source_file\n", 29);
-//		return (0);
-//	}
-//	fd = open(argv[1],O_RDONLY);
-//	tetreadvalid(fd, tet, inp);
-//	size = 0;
-//	while (inp[size] && size < 27)
-//		size++;
-//	tetra = (char ***)malloc(sizeof(char **) * (size + 1));
-//	tetra[size] = NULL;
-//	j = -1;
-//	while (++j < size)
-//	{
-//		tetra[j] = int2tetra(inp[j], 'A' + j);
-//		i = -1;
-//		while (++i < 4)
-//			printf("%0x, %s\n", inp[0], tetra[j][i]);
-//		printf("\n");
-//	}
-//	//fillit(tetra);
-//	exit(0);
+	ft_memcpy((void *)tet,(void *)STRING_TETRA_1, 20);
+	ft_memcpy((void *)(tet + 20),(void *)STRING_TETRA_2, 20);
+	ft_bzero(inp, 27);
+	if (argc != 2)
+	{
+		write(1, "usage: ./fillit source_file\n", 29);
+		return (0);
+	}
+	fd = open(argv[1],O_RDONLY);
+	tetreadvalid(fd, tet, inp);
+	size = 0;
+	while (inp[size] && size < 27)
+		size++;
+	tetra = (char ***)malloc(sizeof(char **) * (size + 1));
+	tetra[size] = NULL;
+	j = -1;
+	while (++j < size)
+	{
+		tetra[j] = int2tetra(inp[j], 'A' + j);
+		i = -1;
+		while (++i < 4)
+			printf("%0x, %s\n", inp[0], tetra[j][i]);
+		printf("\n");
+	}
+	fillit(tetra);
+	exit(0);
 }

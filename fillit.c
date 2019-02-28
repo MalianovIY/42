@@ -12,7 +12,25 @@
 
 #include "fillit.h"
 
-char	**createmap(int size)
+void	puttetra(char ***map, char ****t, int p)
+{
+	int	i, j;
+
+	i = 0;
+	while (map[0][i])
+	{
+		j = 0;
+		while(map[0][i][j] != '.' && map[0][i][j])
+			j++;
+		if (map[0][i][j] == '.')
+
+	}
+
+}
+
+void	removetetra();
+
+char	**createmap(size_t size)
 {
 	char **map;
 	int i;
@@ -31,25 +49,33 @@ char	**createmap(int size)
 	return (map);
 }
 
-void 	backtracking(char **map, char ***t)
+void 	backtracking(char ***map, char ****tet)
 {
-	int	i, j, k;
+	int		i, j, p;
+	char	***t;
 
-	i = 0;
-	while ()
-	while (t[i] != NULL)
+	i = -1;
+	t = *tet;
+	while (t[++i] != NULL)
 	{
-		if
-		puttetra(map, tetra[i]);
-		backtracking(map, tetra);
-		removetera(map, tetra[i++]);
+		p = 1;
+		j = 0;
+		while (t[i][j])
+			if (t[i][j][0] != '.' || t[i][j][1] != '.' || t[i][j][2] != '.' ||
+					t[i][j][3] != '.')
+				p = 0;
+		if (p)
+		{
+			puttetra(map, tet, i);
+			backtracking(map, tet);
+			removetetra(map, tet, i);
+		}
 	}
-
 }
 
 void	fillit(char ***t, int n)
 {
 	char **map;
-	map = createmap(2 * n);
-	backtracking(map, t);
+	map = createmap((size_t)2 * n);
+	backtracking(&map, &t);
 }
