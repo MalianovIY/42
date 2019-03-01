@@ -12,23 +12,31 @@
 
 #include "fillit.h"
 
-void	puttetra(char ***map, char ****t, int p)
+void	puttetra(tetra_t *map, tetra_t **t, int p)
 {
-	int	i, j;
+	int	i, j, k, f;
 
-	i = 0;
-	while (map[0][i])
+	i = -1;
+	while (map[0].t[++i])
 	{
 		j = 0;
-		while(map[0][i][j] != '.' && map[0][i][j])
+		while(map[0].t[i][j] != '.' && map[0].t[i][j])
 			j++;
-		if (map[0][i][j] == '.')
-
+		if (map[0].t[i][j] == '.')
+		{
+			if ((t[0][p]).x + i >= map[0].x || (t[0][p]).y + j >= map[0].x)
+				continue ;
+			k = (int)t[0][p].k;
+			while (k / 4 < 4)
+				if (t[0][p].t[k / 4][k % 4] - '.')
+					if (map[0].t[i + k / 4][j + k % 4 - (int)t[0][p].k] == '.')
+						;
+		}
 	}
 
 }
 
-void	removetetra();
+void	removetetra(tetra_t *map, tetra_t **t, int p);
 
 char	**createmap(size_t size)
 {
@@ -49,20 +57,20 @@ char	**createmap(size_t size)
 	return (map);
 }
 
-void 	backtracking(char ***map, char ****tet)
+void 	backtracking(tetra_t *map, tetra_t **tet)
 {
 	int		i, j, p;
-	char	***t;
+	tetra_t	*t;
 
 	i = -1;
 	t = *tet;
-	while (t[++i] != NULL)
+	while ((t[++i]).t != NULL)
 	{
 		p = 1;
 		j = 0;
-		while (t[i][j])
-			if (t[i][j][0] != '.' || t[i][j][1] != '.' || t[i][j][2] != '.' ||
-					t[i][j][3] != '.')
+		while (((t[i]).t)[j])
+			if (((t[i]).t)[j][0] - '.' || ((t[i]).t)[j][1] - '.'
+					|| ((t[i]).t)[j][2] - '.' || ((t[i]).t)[j][3] - '.')
 				p = 0;
 		if (p)
 		{
@@ -73,9 +81,10 @@ void 	backtracking(char ***map, char ****tet)
 	}
 }
 
-void	fillit(char ***t, int n)
+void	fillit(tetra_t **t, size_t n)
 {
-	char **map;
-	map = createmap((size_t)2 * n);
-	backtracking(&map, &t);
+	tetra_t map;
+	map.x = 2 * n;
+	map.t = createmap(map.x);
+	backtracking(&map, t);
 }

@@ -12,10 +12,10 @@
 
 #include "fillit.h"
 
-char	**int2tetra(int a, char c) //65 .46
+char	**int2tetra(int a, char c, tetra_t *t) //'A' == 65, '.' == 46
 {
 	char 	**tet;
-	int		i;
+	int		i, j;
 
 	i = -1;
 	if (a == 0)
@@ -32,6 +32,11 @@ char	**int2tetra(int a, char c) //65 .46
 		tet[i][4] = 0;
 		a <<= 4;
 	}
+	j = -1;
+	while (++j < 5)
+		if (tet[i][j] != '.')
+			t->x = (size_t)j;
+	t->y = (size_t)i;
 	while (++i < 4)
 		tet[i] = ft_memset((char *)ft_memalloc(sizeof(char) * 5), 46, 4);
 	return (tet);
@@ -92,35 +97,37 @@ void	tetreadvalid(int fd, int const tet[], int inp[])
 
 int		main(int argc, char *argv[])
 {
-	int				fd, i, j, size;
-	unsigned int	tet[20];
-	int				inp[27];
-	char 			***tetra;
+	int		fd, i, j, size, mx, my;
+	size_t	tet[20],inp[27];
+	tetra_t	*tetra;
 
-	ft_memcpy((void *)tet,(void *)STRING_TETRA_1, 20);
-	ft_memcpy((void *)(tet + 20),(void *)STRING_TETRA_2, 20);
+	ft_memcpy((void *)&tet[0],(void *)STRING_TETRA_1, 20);
+	ft_memcpy((void *)&tet[20],(void *)STRING_TETRA_2, 20);
 	ft_bzero(inp, 27);
 	if (argc != 2)
 	{
 		write(1, "usage: ./fillit source_file\n", 29);
 		return (0);
 	}
-	fd = open(argv[1],O_RDONLY);
+	fd = open(argv[1], O_RDONLY);
 	tetreadvalid(fd, tet, inp);
+	close(argv[1]);
 	size = 0;
 	while (inp[size] && size < 27)
 		size++;
-	tetra = (char ***)malloc(sizeof(char **) * (size + 1));
-	tetra[size] = NULL;
+	tetra = (tetra_t *)malloc(sizeof(tetra_t) * (size + 1));
+	tetra[size].t = NULL;
 	j = -1;
 	while (++j < size)
 	{
-		tetra[j] = int2tetra(inp[j], 'A' + j);
+		tetra[j].t = int2tetra(inp[j], 'A' + j, &(tetra[j]));
 		i = -1;
-		while (++i < 4)
-			printf("%0x, %s\n", inp[0], tetra[j][i]);
-		printf("\n");
+		tetra[j].x = 0;
+		tetra[j].y = 0;
+		tetra[j].k = 0;
+		while (tetra[j].t[0][tetra[j].k] == '.')
+			tetra[j].k++;
 	}
-	fillit(tetra);
+	fillit(&tetra, (size_t)size);
 	exit(0);
 }
