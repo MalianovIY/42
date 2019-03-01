@@ -12,7 +12,7 @@
 
 #include "fillit.h"
 
-char	**int2tetra(int a, char c, tetra_t *t) //'A' == 65, '.' == 46
+char	**int2tetra(unsigned int a, char c, tetra_t *t) //'A' == 65, '.' == 46
 {
 	char 	**tet;
 	int		i, j;
@@ -98,16 +98,19 @@ void	tetreadvalid(int fd, int const tet[], int inp[])
 int		main(int argc, char *argv[])
 {
 	int		fd, i, j, size, mx, my;
-	size_t	tet[20],inp[27];
+	unsigned int	tet[20],inp[27];
 	tetra_t	*tetra;
 
 	ft_memcpy((void *)&tet[0],(void *)STRING_TETRA_1, 20);
-	ft_memcpy((void *)&tet[20],(void *)STRING_TETRA_2, 20);
+	ft_memcpy((void *)&tet[10],(void *)STRING_TETRA_2, 20);
+//	unsigned char *t; t = tet;
+//	while (t - tet < 40)
+//		printf("\\%o",*t++);printf();
 	ft_bzero(inp, 27);
 	if (argc != 2)
 	{
 		write(1, "usage: ./fillit source_file\n", 29);
-		return (0);
+		exit(0);
 	}
 	fd = open(argv[1], O_RDONLY);
 	tetreadvalid(fd, tet, inp);
@@ -118,16 +121,22 @@ int		main(int argc, char *argv[])
 	tetra = (tetra_t *)malloc(sizeof(tetra_t) * (size + 1));
 	tetra[size].t = NULL;
 	j = -1;
-	while (++j < size)
+	while (++j < 20)
 	{
-		tetra[j].t = int2tetra(inp[j], 'A' + j, &(tetra[j]));
+		tetra[j].t = int2tetra(tet[j], 'A' + j, &(tetra[j]));
 		i = -1;
 		tetra[j].x = 0;
 		tetra[j].y = 0;
 		tetra[j].k = 0;
 		while (tetra[j].t[0][tetra[j].k] == '.')
 			tetra[j].k++;
+		ft_putendl(tetra[j].t[0]);
+		ft_putendl(tetra[j].t[1]);
+		ft_putendl(tetra[j].t[2]);
+		ft_putendl(tetra[j].t[3]);
+		ft_putendl("");
 	}
-	fillit(&tetra, (size_t)size);
+	//if (fillit(&tetra, (size_t)size) == 1)
+	//	printf("1!!!11!!!");
 	exit(0);
 }

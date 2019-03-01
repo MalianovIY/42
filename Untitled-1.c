@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "libft/includes/libft.h"
 
 unsigned char	**int2tetra(unsigned int a, char c)//, tetra_t *t) //'A' == 65, '.' == 46
 {
@@ -8,11 +9,11 @@ unsigned char	**int2tetra(unsigned int a, char c)//, tetra_t *t) //'A' == 65, '.
 	i = -1;
 	if (a == 0)
 		exit(221);
-	tet = (char **)malloc(sizeof(char *) * 5);
+	tet = (unsigned char **)malloc(sizeof(unsigned char *) * 5);
 	tet[4] = NULL;
 	while ((a & 0xF000) != 0 && i < 4)
 	{
-		tet[++i] = (char *)malloc(sizeof(char) * 5);
+		tet[++i] = (unsigned char *)malloc(sizeof(unsigned char) * 5);
 		tet[i][0] = 46 + (char)((a & 0x8000) != 0) * (c - 46);
 		tet[i][1] = 46 + (char)((a & 0x4000) != 0) * (c - 46);
 		tet[i][2] = 46 + (char)((a & 0x2000) != 0) * (c - 46);
@@ -26,7 +27,7 @@ unsigned char	**int2tetra(unsigned int a, char c)//, tetra_t *t) //'A' == 65, '.
 //			t->x = (size_t)j;
 //	t->y = (size_t)i;
 	while (++i < 4)
-		tet[i] = ft_memset((char *)ft_memalloc(sizeof(char) * 5), 46, 4);
+		tet[i] = (unsigned char *)ft_memset((void *)(unsigned char *)ft_memalloc(sizeof(unsigned char) * 5), 46, 4);
 	return (tet);
 }
 
@@ -34,7 +35,7 @@ int main()
 {
 	unsigned int c[20];
 	unsigned int *a;
-	unsigned char	**u;
+	unsigned char	**u, s[40], *t;
 	a = c;
 	*a++ = (0xCC) << 8;
 	*a++ = (0xF0) << 8;
@@ -57,14 +58,19 @@ int main()
 	*a++ = (0x8C8) << 4;
 	*a++ = 0;
 
-	a = c;
-	while (u)
-	{
-		printf("%d\n\n", *a);
-		u = int2tetra(*a, 'A' + a - c);
-		printf("%s\n%s\n%s\n%s\n\n", u[0], u[1], u[2], u[3]);
-		a++;
-	}
+	// a = c;
+	// while (u)
+	// {
+	// 	printf("%d\n\n", *a);
+	// 	u = int2tetra(*a, 'A' + a - c);
+	// 	printf("%s\n%s\n%s\n%s\n\n", u[0], u[1], u[2], u[3]);
+	// 	a++;
+	// }
+
+	ft_memcpy((void *)s, (void *)c, 40);
+	t = s;
+	while (t - s < 40)
+		printf("\\%o",*t++);
 	/*
 	char **c;
 	int	i = -1,j = -1;

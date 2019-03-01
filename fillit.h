@@ -17,20 +17,21 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <stdio.h>
-
+					//	"\0\314\0\0\0\360\0\0\210\210\0\0\0\154\0\0\100\214\0\0"
 # define STRING_TETRA_1 "\0\314\0\0\0\360\0\0\210\210\0\0\0\154\0\0\100\214\0\0"
+					//	"\0\306\0\0\200\114\0\0\0\350\0\0\100\304\0\0\0\56\0\0"
 # define STRING_TETRA_2 "\0\306\0\0\200\114\0\0\0\350\0\0\100\304\0\0\0\56\0\0"
 
-typedef struct	s_tetra
+typedef struct		s_tetra
 {
-	char		**t;
-	size_t 		x;
-	size_t 		y;
-	size_t 		k;
-}				tetra_t;
+	char			**t;
+	size_t	 		x;
+	size_t 			y;
+	size_t 			k;
+}					tetra_t;
 
-char			**int2tetra(int inttetra, char litera, tetra_t *tetra);
+char			**int2tetra(unsigned int inttetra, char litera, tetra_t *tetra);
 
-void			fillit(tetra_t **t, size_t count);
+int			fillit(tetra_t **t, size_t count);
 
 #endif
