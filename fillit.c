@@ -25,7 +25,7 @@ char	puttetrahlp(t_tet *m, t_tet **t, int i, int p)
 		k[3] = k[0] / 4;
 		k[4] = k[0] % 4;
 		if (t[p]->t[k[3]][k[4]] != '.')
-			m->t[k[1] + k[3]][k[2] + k[4] - t[p]->k] = p + 65;
+			m->t[k[1] + k[3]][k[2] + k[4] - t[p]->k] = (char)(p + 65);
 	}
 	return (1);
 }
@@ -41,7 +41,9 @@ int	puttetra(t_tet *m, t_tet **t, int p)
 			i++;
 		if (m->t[i / m->x][i % m->x] == '.')
 		{
-			if (t[p]->x + i / m->x >= m->x || t[p]->y + i % m->x >= m->x)
+			if (t[p]->y + i / m->x >= m->x
+					|| t[p]->x + i % m->x - t[p]->k >= m->x
+					||  i % m->x - t[p]->k < 0)
 				continue ;
 			k = (int)t[p]->k - 1;
 			while (++k < 16)

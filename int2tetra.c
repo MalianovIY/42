@@ -30,11 +30,11 @@
 		tet[i][4] = 0;
 		a <<= 4;
 	}
-	j = -1;
-	while (++j < 5)
-		if (tet[i][j] != '.')
-			t->x = (size_t)j;
 	t->y = (size_t)i;
+	j = -1;
+	while (++j < 4)
+		if (tet[i][j] != '.')
+			t->x = t->x > j ? t->x : (size_t)j;
 	t->t = tet;
 }
 
@@ -51,11 +51,11 @@ int		tetread(int fd, char buf[], USI *t)
 	t[0] = 0;
 	wl = 5;
 	while (buf[++i])
-		if (((buf[i] == 46 || buf[i] == 35) && i % 5 != 4 && i != 20) ||
-				(buf[i] == 10 && (i % 5 == 4 || i == 20)))
-			if ((*t = buf[i] == 35 ? ((*t << 1) | 1) : *t) != 0 &&
-					buf[i] == 35)
-				wl = wl < i % 5 ? wl : i % 5;
+		if (((buf[i] == 46 || buf[i] == 35) && i % 5 != 4 && i != 20)
+				|| (buf[i] == 10 && (i % 5 == 4 || i == 20)))
+			if ((*t = buf[i] == 35 ? (USI)((*t << 1) | 1) : *t) != 0
+					&& buf[i] == 35)
+				wl = wl < i % 5 ? wl : (USI)(i % 5);
 			else
 				*t = (buf[i] == '.') ? (*t << 1) : *t;
 		else
@@ -99,10 +99,10 @@ void	tetreadvalid(int fd, USI const tet[], USI inp[], int *size)
 
 int		main(int argc, char **argv)
 {
-	int		fd, j, size;
+	int		fd, p, size;
 	USI		tet[27], inp[27];
-	t_tet	*tetra;
-	char	**t;
+	t_tet	*t;
+	char	**x;
 
 	ft_bzero(tet, 54);
 	ft_bzero(inp, 54);
@@ -117,19 +117,19 @@ int		main(int argc, char **argv)
 	fd = open(argv[1], O_RDONLY);
 	tetreadvalid(fd, tet, inp, &size);
 	close(fd);
-	tetra = (t_tet *)malloc(sizeof(t_tet) * (size + 1));
-	tetra[size].t = NULL;
-	j = -1;
-	while (++j < size)
+	t = (t_tet *)malloc(sizeof(t_tet) * (size + 1));
+	t[size].t = NULL;
+	p = -1;
+	while (++p < size)
 	{
-		t = (char **)ft_arrnew(4, 4, 46);
-		int2tetra(inp[j], 65 + j, &tetra[j], &t);
-		tetra[j].k = 0;
-		tetra[j].p = 0;
-		while (tetra[j].t[0][tetra[j].k] == 46)
-			tetra[j].k++;
+		x = (char **)ft_arrnew(4, 4, 46);
+		int2tetra(inp[p], 65 + p, &t[p], &x);
+		t[p].p = 0;
+		t[p].k = 0;
+		while (t[p].t[0][t[p].k] == 46)
+			t[p].k++;
 	}
-	if (fillit(&tetra, (size_t)size) == 1)
+	if (fillit(&t, (size_t)size) == 1)
 		printf("1!!!11!!!");
 	exit(0);
 }
