@@ -17,10 +17,11 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <stdio.h>
-					//	"\0\314\0\0\0\360\0\0\210\210\0\0\0\154\0\0\100\214\0\0"
-# define STRING_TETRA_1 "\0\314\0\0\0\360\0\0\210\210\0\0\0\154\0\0\100\214\0\0"
-					//	"\0\306\0\0\200\114\0\0\0\350\0\0\100\304\0\0\0\56\0\0"
-# define STRING_TETRA_2 "\0\306\0\0\200\114\0\0\0\350\0\0\100\304\0\0\0\56\0\0"
+
+# define USI unsigned short int
+# define STR_TETRA_1 "\210\210\0\360\0\314\0\154\0\306\100\214\200\114\0\350"
+# define STR_TETRA_2 "\0\56\100\304\0\342\300\210\0\216\300\104\200\310\0\344"
+# define STR_TETRA_3 "\0\116\100\114\200\214\0\0\0\0\0\0\0\0"
 
 typedef struct		s_tetra
 {
@@ -28,10 +29,11 @@ typedef struct		s_tetra
 	size_t	 		x;
 	size_t 			y;
 	size_t 			k;
-}					tetra_t;
+	char 			p;
+}					t_tet;
 
-char			**int2tetra(unsigned int inttetra, char litera, tetra_t *tetra);
+void				int2tetra(USI inttet, char lit, t_tet *tetra, char ***c);
 
-int			fillit(tetra_t **t, size_t count);
+int					fillit(t_tet **t, size_t count);
 
 #endif

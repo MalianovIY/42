@@ -117,6 +117,8 @@ t_list				*ft_lstnew(void const *con, size_t sc);
 t_list				*ft_lstsearch(t_list *list, int (*f)(void *data,\
 									t_list elem), void *data);
 
+void				**ft_arrnew(size_t m, size_t n, unsigned char c);
+
 void				*ft_free2d(void **x);
 
 void				*ft_free3d(void ***x);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   fillit.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahorker <ahorker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,98 +12,100 @@
 
 #include "fillit.h"
 
-int	puttetra(tetra_t *map, tetra_t **t, int p)
+char	puttetrahlp(t_tet *m, t_tet **t, int i, int p)
 {
-	int	i, k, f;
+	int	k[5];
+
+
+	k[1] = (int)(i / m->x);
+	k[2] = (int)(i % m->x);
+	k[0] = (int)t[p]->k - 1;
+	while (++k[0] < 16)
+	{
+		k[3] = k[0] / 4;
+		k[4] = k[0] % 4;
+		if (t[p]->t[k[3]][k[4]] != '.')
+			m->t[k[1] + k[3]][k[2] + k[4] - t[p]->k] = p + 65;
+	}
+	return (1);
+}
+
+int	puttetra(t_tet *m, t_tet **t, int p)
+{
+	int	i, k;
 
 	i = -1;
-	while (++i < map[0].x * map[0].x)
+	while (++i < m->k)
 	{
-		while(map[0].t[i / 4][i % 4] != '.' && map[0].t[i / 4][i % 4])
+		while(m->t[i / m->x][i % m->x] != '.' && m->t[i / m->x][i % m->x])
 			i++;
-		if (map[0].t[i / 4][i % 4] == '.')
+		if (m->t[i / m->x][i % m->x] == '.')
 		{
-			if ((t[0][p]).x + i / 4 >= map[0].x || (t[0][p]).y + i % 4 >= map[0].x)
+			if (t[p]->x + i / m->x >= m->x || t[p]->y + i % m->x >= m->x)
 				continue ;
-			k = (int)t[0][p].k - 1;
+			k = (int)t[p]->k - 1;
 			while (++k < 16)
-				if (t[0][p].t[k / 4][k % 4] - '.')
-					if (map[0].t[i / 4 + k / 4][i % 4 + k % 4 - t[0][p].k] - 46)
+				if (t[p]->t[k / 4][k % 4] - '.')
+					if (m->t[i / m->x + k / 4][i % m->x + k % 4 - t[p]->k] - 46)
 						break ;
 			if (k == 16)
-			{
-				k = (int)t[0][p].k - 1;
-				while (++k < 16)
-					if (t[0][p].t[k / 4][k % 4] - '.')
-					{
-						map[0].t[i / 4 + k / 4][i % 4 + k % 4 - t[0][p].k] = t[0][p].t[k / 4][k % 4];
-						t[0][p].t[k / 4][k % 4] = '.';
-					}
-				return (1);
-			}
+				return ((int)(t[p]->p = puttetrahlp(m, t, i, p)));
 		}
 	}
 	return (0);
 }
 
-void	removetetra(tetra_t *map, tetra_t **t, int p);
-
-char	**createmap(size_t size)
+void	removetetra(t_tet *m, t_tet **t, int p)
 {
-	char **map;
-	int i;
+	int i, k;
 
-	if (!(map = (char **)malloc(sizeof(char *) * (size + 1))))
-		exit(6);
-	map[size] = NULL;
+	t[p]->p = 0;
+	p += 'A';
 	i = -1;
-	while (++i < size)
-	{
-		if (!(map[i] = (char *)malloc(sizeof(char) * (size + 1))))
-			exit(7);
-		ft_memset(map[i], '.', size);
-		map[i][size] = 0;
-	}
-	return (map);
+	while (++i < m->k)
+		if (m->t[i / m->x][i % m->x] == p)
+			break ;
+	k = (int)t[p -= 'A']->k - 1;
+	while (++k < 16)
+		if (t[p]->t[k / 4][k % 4] - '.')
+			m->t[i / m->x + k / 4][i % m->x + k % 4 - t[p]->k] = 46;
 }
 
-void 	backtracking(tetra_t *map, tetra_t **tet)
+int		backtracking(t_tet *m, t_tet **t)
 {
-	int		i, j, p;
-	tetra_t	*t;
+	int		p;
 
-	i = -1;
-	t = *tet;
-	while ((t[++i]).t != NULL)
+	p = -1;
+	while ((t[++p])->t != NULL)
 	{
-		p = 1;
-		j = 0;
-		while (((t[i]).t)[j])
-			if (((t[i]).t)[j][0] - '.' || ((t[i]).t)[j][1] - '.'
-					|| ((t[i]).t)[j][2] - '.' || ((t[i]).t)[j][3] - '.')
-				p = 0;
-		if (p)
+		if (t[p]->p == 0)
 		{
-			if (puttetra(map, tet, i) == 1)
+			if (puttetra(m, t, p) == 1)
 			{
-				ft_putendl(map[0].t[0]);
-				ft_putendl(map[0].t[1]);
-				ft_putendl(map[0].t[2]);
-				ft_putendl(map[0].t[3]);
+				ft_putendl(m->t[0]);
+				ft_putendl(m->t[1]);
+				ft_putendl(m->t[2]);
+				ft_putendl(m->t[3]);
 			}
-			else
-				printf("err");
-				//backtracking(map, tet);
-				//removetetra(map, tet, i);
+			backtracking(m, t);
+			removetetra(m, t, p);
 		}
 	}
+	return (1);
 }
 
-int	fillit(tetra_t **t, size_t n)
+int	fillit(t_tet **t, size_t n)
 {
-	tetra_t map;
-	map.x = 2 * n;
-	map.t = createmap(map.x);
-	backtracking(&map, t);
+	t_tet m;
+
+	m.x = n > 3 ? n : n + 1;
+	m.k = m.x * m.x;
+	m.t = (char **)ft_arrnew(m.x, m.x, 46);
+	while (backtracking(&m, t))
+	{
+		m.x++;
+		m.k = m.x * m.x;
+		m.t = (char **)ft_arrnew(m.x, m.x, 46);
+	}
 	return (1);
 }

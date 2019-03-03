@@ -8,7 +8,7 @@ include_directories(./ ./libft/includes)  #directory with headers
 ###link_directories(/usr/local/lib ./libft)
 ###link_libraries(mlx)
 FILE(GLOB LIBFT_SRCS ./libft/*.c)  # ADD LIBFT as sources
-add_executable(Fillit ${LIBFT_SRCS} main.c fillit.h fillit.c int2tetra.c)
+add_executable(Fillit ${LIBFT_SRCS} fillit.h fillit.c int2tetra.c)
 # all project-c-files here
 
 ###target_link_libraries(Fillit ${OPEN_GL} ${APP_KIT})  # LINK libraries
