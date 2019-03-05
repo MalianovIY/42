@@ -12,33 +12,33 @@
 
 #include "fillit.h"
 
- void	int2tetra(USI a, char c, t_tet *t, char ***g)
+void int2tetra(USI a, char c, t_tet **t)
 {
 	int		i, j;
-	char	**tet;
 
-	tet = *g;
 	if (a == 0)
-		exit(221);
+		exit(7);
 	i = -1;
 	while ((a & 0xF000) != 0 && ++i < 4)
 	{
-		tet[i][0] = 46 + (char)((a & 0x8000) != 0) * (c - 46);
-		tet[i][1] = 46 + (char)((a & 0x4000) != 0) * (c - 46);
-		tet[i][2] = 46 + (char)((a & 0x2000) != 0) * (c - 46);
-		tet[i][3] = 46 + (char)((a & 0x1000) != 0) * (c - 46);
-		tet[i][4] = 0;
+		(*t)->t[i][0] = (char)(46 + ((a & 0x8000) != 0) * (c - 46));
+		(*t)->t[i][1] = (char)(46 + ((a & 0x4000) != 0) * (c - 46));
+		(*t)->t[i][2] = (char)(46 + ((a & 0x2000) != 0) * (c - 46));
+		(*t)->t[i][3] = (char)(46 + ((a & 0x1000) != 0) * (c - 46));
+		(*t)->t[i][4] = 0;
 		a <<= 4;
 	}
-	t->y = (size_t)i;
+	(*t)->y = i + 1;
 	j = -1;
 	while (++j < 4)
-		if (tet[i][j] != '.')
-			t->x = t->x > j ? t->x : (size_t)j;
-	t->t = tet;
+		if ((*t)->t[i][j] != '.')
+			(*t)->x = (*t)->x > j ? (*t)->x : j;
+	(*t)->x++;
+	while(i < 4)
+		ft_strcpy((*t)->t[i++],"....");
+	ft_memset((*t)->t[i], '\0', 5);
 }
-
-int		tetread(int fd, char buf[], USI *t)
+int tetra_read(int fd, char *buf, USI *t)
 {
 	short int	i;
 	USI			ret, wl;
@@ -68,7 +68,7 @@ int		tetread(int fd, char buf[], USI *t)
 	return (ret);
 }
 
-void	tetreadvalid(int fd, USI const tet[], USI inp[], int *size)
+int	tetra_valid(int fd, USI const tet[], USI inp[])
 {
 	char	buf[22];
 	int		i, j, ret, p;
@@ -79,7 +79,7 @@ void	tetreadvalid(int fd, USI const tet[], USI inp[], int *size)
 	p = 1;
 	while (ret > 19)
 	{
-		ret = tetread(fd, buf, &t);
+		ret = tetra_read(fd, buf, &t);
 		p = (ret == 20 ? 0 : p);
 		i = -1;
 		while (tet[++i] && t)
@@ -92,17 +92,16 @@ void	tetreadvalid(int fd, USI const tet[], USI inp[], int *size)
 		if (ret < 21)
 			break ;
 	}
-	*size = j;
 	if (p == 1)
 		exit(5);
+	return (j);
 }
 
 int		main(int argc, char **argv)
 {
-	int		fd, p, size;
+ 	int		fd, p, se;
 	USI		tet[27], inp[27];
-	t_tet	*t;
-	char	**x;
+	t_tet	*t, *t1;
 
 	ft_bzero(tet, 54);
 	ft_bzero(inp, 54);
@@ -115,21 +114,26 @@ int		main(int argc, char **argv)
 		exit(0);
 	}
 	fd = open(argv[1], O_RDONLY);
-	tetreadvalid(fd, tet, inp, &size);
+	se = tetra_valid(fd, tet, inp);
 	close(fd);
-	t = (t_tet *)malloc(sizeof(t_tet) * (size + 1));
-	t[size].t = NULL;
+	if ((t = (t_tet *)malloc(sizeof(t_tet))) == NULL)
+		exit (800);
 	p = -1;
-	while (++p < size)
+	t1 = t;
+	while (++p < se)
 	{
-		x = (char **)ft_arrnew(4, 4, 46);
-		int2tetra(inp[p], 65 + p, &t[p], &x);
-		t[p].p = 0;
-		t[p].k = 0;
-		while (t[p].t[0][t[p].k] == 46)
-			t[p].k++;
+		int2tetra(inp[p], (char)('A' + p), &t1);
+		t1->p = 0;
+		t1->k = 0;
+		while (t1->t[0][t1->k] == '.')
+			t1->k++;
+		if ((t1->next = (t_tet *)malloc(sizeof(t_tet))) == NULL)
+			exit (345);
+		t1 = t1->next;
 	}
-	if (fillit(&t, (size_t)size) == 1)
+	if (fill_it(&t, se) == 1)
 		printf("1!!!11!!!");
+	else
+	{ }
 	exit(0);
 }

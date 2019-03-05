@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 project(fillit C)      # project name
 set(CMAKE_C_STANDARD 99)
-add_compile_options()#-Wall -Werror -Wextra) # flags
+add_compile_options(-Wall -Werror -Wextra) # flags
 ###find_library(OPEN_GL OpenGl)
 ###find_library(APP_KIT AppKit)
 include_directories(./ ./libft/includes)  #directory with headers

@@ -23,17 +23,18 @@
 # define STR_TETRA_2 "\0\56\100\304\0\342\300\210\0\216\300\104\200\310\0\344"
 # define STR_TETRA_3 "\0\116\100\114\200\214\0\0\0\0\0\0\0\0"
 
-typedef struct		s_tetra
+typedef struct				s_tet
 {
-	char			**t;
-	size_t	 		x;
-	size_t 			y;
-	size_t 			k;
-	char 			p;
-}					t_tet;
+	char					t[54][54];
+	int						x;
+	int						y;
+	int						k;
+	char					p;
+	struct s_tet			*next;
+}							t_tet;
 
-void				int2tetra(USI inttet, char lit, t_tet *tetra, char ***c);
+void				int2tetra(USI int2t, char lit, t_tet **tetra);
 
-int					fillit(t_tet **t, size_t count);
+int					fill_it(t_tet **t, int count);
 
 #endif

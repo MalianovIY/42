@@ -12,27 +12,30 @@
 
 #include "fillit.h"
 
-char	puttetrahlp(t_tet *m, t_tet **t, int i, int p)
+char	put_tetra_help(t_tet *m, t_tet **t, int i)
 {
-	int	k[5];
+	int	k[6];
 
-
-	k[1] = (int)(i / m->x);
-	k[2] = (int)(i % m->x);
-	k[0] = (int)t[p]->k - 1;
-	while (++k[0] < 16)
+	k[5] = 0;
+	k[1] = i / m->x;
+	k[2] = i % m->x;
+	k[0] = (*t)->k - 1;
+	while (++k[0] < 13 && k[5] < 4)
 	{
 		k[3] = k[0] / 4;
 		k[4] = k[0] % 4;
-		if (t[p]->t[k[3]][k[4]] != '.')
-			m->t[k[1] + k[3]][k[2] + k[4] - t[p]->k] = (char)(p + 65);
+		if ((*t)->t[k[3]][k[4]] != '.')
+		{
+			m->t[k[1] + k[3]][k[2] + k[4] - (*t)->k] = (*t)->t[0][(*t)->k];
+			k[5]++;
+		}
 	}
 	return (1);
 }
 
-int	puttetra(t_tet *m, t_tet **t, int p)
+int	put_tetra(t_tet *m, t_tet **t)
 {
-	int	i, k;
+	int	i, k, l;
 
 	i = -1;
 	while (++i < m->k)
@@ -41,73 +44,88 @@ int	puttetra(t_tet *m, t_tet **t, int p)
 			i++;
 		if (m->t[i / m->x][i % m->x] == '.')
 		{
-			if (t[p]->y + i / m->x >= m->x
-					|| t[p]->x + i % m->x - t[p]->k >= m->x
-					||  i % m->x - t[p]->k < 0)
+			if ((*t)->y + i / m->x > m->x
+					|| (*t)->x + i % m->x - (*t)->k > m->x
+					|| i % m->x - (*t)->k < 0)
 				continue ;
-			k = (int)t[p]->k - 1;
-			while (++k < 16)
-				if (t[p]->t[k / 4][k % 4] - '.')
-					if (m->t[i / m->x + k / 4][i % m->x + k % 4 - t[p]->k] - 46)
+			k = (*t)->k - 1;
+			l = 0;
+			while (++k < 13 && l < 4)
+				if ((*t)->t[k / 4][k % 4] != '.' && m->t[i / m->x + k / 4]
+							[i % m->x + k % 4 - (*t)->k] != '.')
 						break ;
-			if (k == 16)
-				return ((int)(t[p]->p = puttetrahlp(m, t, i, p)));
+				else
+					l++;
+			if (l == 4)
+				return ((int)((*t)->p = put_tetra_help(m, t, i)));
 		}
 	}
 	return (0);
 }
 
-void	removetetra(t_tet *m, t_tet **t, int p)
+void	remove_tetra(t_tet *m, t_tet **t)
 {
-	int i, k;
+	int i, k, p;
 
-	t[p]->p = 0;
-	p += 'A';
+	(*t)->p = 0;
+	p = (*t)->t[0][(*t)->k];
 	i = -1;
 	while (++i < m->k)
 		if (m->t[i / m->x][i % m->x] == p)
 			break ;
-	k = (int)t[p -= 'A']->k - 1;
+	k = (*t)->k - 1;
 	while (++k < 16)
-		if (t[p]->t[k / 4][k % 4] - '.')
-			m->t[i / m->x + k / 4][i % m->x + k % 4 - t[p]->k] = 46;
+		if ((*t)->t[k / 4][k % 4] - '.')
+			m->t[i / m->x + k / 4][i % m->x + k % 4 - (*t)->k] = 46;
 }
 
-int		backtracking(t_tet *m, t_tet **t)
+int		backtracking(t_tet *m, t_tet **t, int se)
 {
-	int		p;
+	int		p, i;
+	t_tet	*t1;
 
 	p = -1;
-	while ((t[++p])->t != NULL)
+	t1 = *t;
+	while (++p < se)
 	{
-		if (t[p]->p == 0)
+		if (t1->p == 0)
 		{
-			if (puttetra(m, t, p) == 1)
+			if (put_tetra(m, &t1) == 1)
 			{
-				ft_putendl(m->t[0]);
-				ft_putendl(m->t[1]);
-				ft_putendl(m->t[2]);
-				ft_putendl(m->t[3]);
+				if (backtracking(m, t, se) == 0)
+					remove_tetra(m, &t1);
 			}
-			backtracking(m, t);
-			removetetra(m, t, p);
+			else
+				return (0);
 		}
+		t1 = t1->next;
 	}
+	i = 0;
+	while (m->t[i])
+		ft_putendl(m->t[i++]); //write normal function of output
 	return (1);
 }
 
-int	fillit(t_tet **t, size_t n)
+int	fill_it(t_tet **t, int n)
 {
-	t_tet m;
+	t_tet	m;
+	int		i[2];
 
 	m.x = n > 3 ? n : n + 1;
 	m.k = m.x * m.x;
-	m.t = (char **)ft_arrnew(m.x, m.x, 46);
-	while (backtracking(&m, t))
+	i[0] = -1;
+	while (++i[0] < 53)
+	{
+		m.t[i[0]][53] = 0;
+		m.t[53][i[0]] = 0;
+		i[1] = -1;
+		while (++i[1] < 53)
+			m.t[i[0]][i[1]] = '.';
+	}
+	while (backtracking(&m, t, n) == 0)
 	{
 		m.x++;
 		m.k = m.x * m.x;
-		m.t = (char **)ft_arrnew(m.x, m.x, 46);
 	}
 	return (1);
 }
