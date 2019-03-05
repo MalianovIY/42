@@ -28,15 +28,16 @@ void int2tetra(USI a, char c, t_tet **t)
 		(*t)->t[i][4] = 0;
 		a <<= 4;
 	}
-	(*t)->y = i + 1;
+	(*t)->y = ++i;
 	j = -1;
-	while (++j < 4)
-		if ((*t)->t[i][j] != '.')
-			(*t)->x = (*t)->x > j ? (*t)->x : j;
-	(*t)->x++;
 	while(i < 4)
 		ft_strcpy((*t)->t[i++],"....");
 	ft_memset((*t)->t[i], '\0', 5);
+	(*t)->x = 0;
+	while (++j < 16)
+		if ((*t)->t[j / 4][j % 4] != '.')
+			(*t)->x = (*t)->x > j % 4 ? (*t)->x : j % 4;
+	(*t)->x++;
 }
 int tetra_read(int fd, char *buf, USI *t)
 {
@@ -131,9 +132,7 @@ int		main(int argc, char **argv)
 			exit (345);
 		t1 = t1->next;
 	}
-	if (fill_it(&t, se) == 1)
-		printf("1!!!11!!!");
-	else
-	{ }
+	t1->next = NULL;
+	fill_it(&t, se);
 	exit(0);
 }
