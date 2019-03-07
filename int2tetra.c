@@ -128,11 +128,11 @@ int		main(int argc, char **argv)
 		t1->k = 0;
 		while (t1->t[0][t1->k] == '.')
 			t1->k++;
-		if ((t1->next = (t_tet *)malloc(sizeof(t_tet))) == NULL)
-			exit (345);
+		if (p + 1 != se)
+			if ((t1->next = (t_tet *)malloc(sizeof(t_tet))) == NULL)
+				exit (345);
 		t1 = t1->next;
 	}
-	t1->next = NULL;
 	fill_it(&t, se);
 	exit(0);
 }

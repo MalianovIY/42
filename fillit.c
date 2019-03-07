@@ -49,7 +49,7 @@ int	put_tetra(t_tet *m, t_tet **t, int i)
 			if ((*t)->t[k / 4][k % 4] != '.' && m->t[i / m->x + k / 4]
 						[i % m->x + k % 4 - (*t)->k] != '.')
 					return (0);
-			else
+			else if ((*t)->t[k / 4][k % 4] != '.')
 				l++;
 		if (l == 4)
 			return ((int)((*t)->p = put_tetra_help(m, t, i)));
@@ -73,36 +73,38 @@ void	remove_tetra(t_tet *m, t_tet **t)
 			m->t[i / m->x + k / 4][i % m->x + k % 4 - (*t)->k] = 46;
 }
 
-int		backtracking(t_tet *m, t_tet **t, int i)
+int		backtracking(t_tet *m, t_tet **t)
 {
 	t_tet	*t1;
+	int		i;
 
 	t1 = *t;
-	while (t1->next != NULL)
-	{
+	while (t1 != NULL)
 		if (t1->p == 0)
-			while (++i < m->k)
-			{
-				while (m->t[i / m->x][i % m->x] != '.'
-						&& m->t[i / m->x][i % m->x])
-					i++;
-				if (put_tetra(m, &t1, i) == 1)
-					if (backtracking(m, t, se) == 0)
-						remove_tetra(m, &t1);
-					else
-						return (1);
-				else
-					return (0);
-			}
-		t1 = t1->next;
-	}
-	t1 = *t;
-	while (t1->next != NULL)
-		if (t1->p == 0)
-			return (0);
+			break ;
 		else
 			t1 = t1->next;
-	return (1);
+	if (t1 == NULL)
+		return (1);
+	while (t1 != NULL)
+	{
+		if (t1->p == 0 && (i = -1) != 0)
+		{
+			while (++i < m->k)
+				if (m->t[i / m->x][i % m->x] == '.')
+					if (put_tetra(m, &t1, i) == 1)
+					{
+						if (backtracking(m, t) == 0)
+							remove_tetra(m, &t1);
+						else
+							return (1);
+					}
+			if (i == m->k)
+				return (0);
+		}
+		t1 = t1->next;
+	}
+	return (0);
 }
 
 int	fill_it(t_tet **t, int n)
@@ -110,7 +112,7 @@ int	fill_it(t_tet **t, int n)
 	t_tet	m;
 	int		i[2];
 
-	m.x = n > 3 ? n : n + 1; // делать нормально!
+	m.x = ft_sqrtrup(4 * n);
 	m.k = m.x * m.x;
 	i[0] = -1;
 	while (++i[0] < 53)
@@ -121,7 +123,7 @@ int	fill_it(t_tet **t, int n)
 		while (++i[1] < 53)
 			m.t[i[0]][i[1]] = '.';
 	}
-	while (backtracking(&m, t, 0) == 0)
+	while (backtracking(&m, t) == 0)
 	{
 		m.x++;
 		m.k = m.x * m.x;

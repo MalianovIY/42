@@ -88,6 +88,8 @@ int					ft_lstdelemp(t_list **lst, t_list *delel);
 
 int					ft_memcmp(const void *a, const void *b, size_t n);
 
+int					ft_sqrtrup(int a);
+
 int					ft_strcmp(const char *c1, const char *c2);
 
 int					ft_strequ(const char *c1, const char *c2);

@@ -14,16 +14,14 @@ FLAGS = -Wall -Wextra -Werror
 OPT = -I. $(HEADER)
 NAME = fillit
 HEADER = ./fillit.h
-FUNCS = $(shell cat ./fillit.h | grep -Eo "ft_\w+")
-SRC = $(FUNCS:=.c)
+SRC = $(fillit.c int2tetra.c)
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
 
-$(NAME): make -C libft
+$(NAME): make -C /libft
     $(OBJ)
 	ar rc $(NAME) $(OBJ)
-	ranlib $(NAME)
 
 %.o: %.c
 	gcc $(FLAGS) $(OPT) $<
